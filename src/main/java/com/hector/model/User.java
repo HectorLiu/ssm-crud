@@ -1,18 +1,17 @@
 package com.hector.model;
 
 public class User {
-    private int id;
+    private Integer id;
+
     private String name;
-    private int age;
 
-    public User() {
-    }
+    private Integer age;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -21,20 +20,14 @@ public class User {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null ? null : name.trim();
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "user [id=" + id + ", name=" + name + ", age=" + age
-                + "]";
     }
 }
