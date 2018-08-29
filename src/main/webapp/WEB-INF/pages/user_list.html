@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css" rel="stylesheet">
+    <title>users</title>
+</head>
+<body>
+<div id="app">
+    <el-row>
+        <el-col :span="24">
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        label="ID"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="age"
+                        label="地址">
+                </el-table-column>
+                <el-table-column
+                        fixed="right"
+                        label="操作"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
+                        <el-button @click="delete(scope.row)" type="text" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-col>
+    </el-row>
+</div>
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.18.0/axios.min.js"></script>
+<script>
+    new Vue({
+        'el': '#app',
+        created: function () {
+            var that = this;
+            axios.get("/api/users")
+                .then(function (response) {
+                    that.tableData = response.data
+                    console.log(response.data)
+                })
+        },
+        data: {
+            tableData: []
+        },
+        methods: {
+            edit: function (row) {
+
+            },
+            delete: function (row) {
+                console.log(row)
+            }
+
+        }
+    })
+</script>
+</body>
+</html>
