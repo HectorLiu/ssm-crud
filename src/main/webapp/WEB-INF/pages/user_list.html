@@ -7,8 +7,14 @@
 </head>
 <body>
 <div id="app">
+
     <el-row>
-        <el-col :span="24">
+        <el-col :span="12">
+            <el-button @click="showCreateDlg = true" type="primary">新建用户</el-button>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="12">
             <el-table
                     :data="tableData"
                     style="width: 100%">
@@ -32,7 +38,7 @@
                         width="100">
                     <template slot-scope="scope">
                         <el-button @click="edit(scope.row)" type="text" size="small">编辑</el-button>
-                        <el-button @click="delete(scope.row)" type="text" size="small">删除</el-button>
+                        <el-button @click="deleteUser(scope.row)" type="text" size="small">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -44,11 +50,36 @@
             :visible.sync="showEditDlg"
             width="30%"
             center>
-        <span>需要注意的是内容是默认不居中的</span>
+        <el-form ref="form" :model="editUser" label-width="80px">
+            <el-form-item label="name">
+                <el-input v-model="editUser.name"></el-input>
+            </el-form-item>
+            <el-form-item label="age">
+                <el-input v-model="editUser.age"></el-input>
+            </el-form-item>
+        </el-form>
         <span slot="footer" class="dialog-footer">
     <el-button @click="showEditDlg = false">取 消</el-button>
     <el-button type="primary" @click="updateUser">确 定</el-button>
-  </span>
+        </span>
+    </el-dialog>
+    <el-dialog
+            title="提示"
+            :visible.sync="showCreateDlg"
+            width="30%"
+            center>
+        <el-form ref="form" :model="newUser" label-width="80px">
+            <el-form-item label="name">
+                <el-input v-model="newUser.name"></el-input>
+            </el-form-item>
+            <el-form-item label="age">
+                <el-input v-model="newUser.age"></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="showCreateDlg = false">取 消</el-button>
+            <el-button type="primary" @click="createUser">确 定</el-button>
+        </span>
     </el-dialog>
 </div>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
@@ -58,33 +89,64 @@
     new Vue({
         'el': '#app',
         created: function () {
-            var that = this;
-            axios.get("/api/users")
-                .then(function (response) {
-                    that.tableData = response.data
-                    console.log(response.data)
-                })
+            this.loadData();
         },
         data: {
             showEditDlg: false,
+            showCreateDlg: false,
             tableData: [],
-            editUser: null,
+            editUser: {
+
+            },
+            newUser:{
+            },
+
         },
         methods: {
+            loadData:function(){
+                var that = this;
+                axios.get("/api/users")
+                    .then(function (response) {
+                        that.tableData = response.data
+                        console.log(response.data)
+                    })
+            },
             edit: function (row) {
                 var that = this
                 axios.get("/api/users/" + row.id)
                     .then(function (response) {
                         that.editUser = response.data
                         that.showEditDlg = true
+                        that.loadData()
                     })
             },
-            delete: function (row) {
-                console.log(row)
+            deleteUser: function (row) {
+                console.log("delete")
+                var that =this
+                axios.delete("api/users/"+row.id)
+                    .then(function (value) {
+                        alert('success')
+                        that.loadData()
+                    })
             },
             updateUser: function () {
-                 axios.put()
+                var that =this
+                axios.put("/api/users/1", this.editUser)
+                    .then(function (value) {
+                        console.log(value.data)
+                        that.loadData()
+                    })
                 this.showEditDlg = false;
+            },
+            createUser:function () {
+                var that = this
+               axios.post("/api/users", this.newUser)
+                   .then(function (value) {
+                       alert('success')
+                       console.log(value)
+                      that.showCreateDlg = false;
+                       that.loadData()
+                   })
             }
 
         }

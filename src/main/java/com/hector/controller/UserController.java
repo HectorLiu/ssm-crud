@@ -27,13 +27,28 @@ public class UserController {
     }
 
     @ResponseBody
+    @PostMapping("/api/users")
+    public String store(@RequestBody User user){
+        userMapper.insertSelective(user);
+        return "ok";
+    }
+    @ResponseBody
     @GetMapping("/api/users/{id}")
     public User show(@PathVariable("id") Integer id) {
         return userMapper.selectByPrimaryKey(id);
     }
 
-//    @PutMapping("/api/users/{id}")
-//    public String update(@PathVariable("id") Integer id){
-//
-//    }
+    @ResponseBody
+    @PutMapping("/api/users/{id}")
+    public String update(@RequestBody User user){
+        userMapper.updateByPrimaryKeySelective(user);
+        return "ok";
+    }
+
+    @ResponseBody
+    @DeleteMapping("/api/users/{id}")
+    public String delete(@PathVariable Integer id){
+        userMapper.deleteByPrimaryKey(id);
+        return "ok";
+    }
 }
